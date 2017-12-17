@@ -32,11 +32,11 @@ using std::new_handler;
 using std::bad_alloc;
 
 #if !_GLIBCXX_HAVE_ALIGNED_ALLOC
-#if _GLIBCXX_HAVE__ALIGNED_MALLOC
-#define aligned_alloc(al,sz) _aligned_malloc(sz,al)
-#elif _GLIBCXX_HAVE_POSIX_MEMALIGN
+#    if _GLIBCXX_HAVE__ALIGNED_MALLOC
+#        define glibcxx_aligned_alloc(al,sz) _aligned_malloc(sz,al)
+#    elif _GLIBCXX_HAVE_POSIX_MEMALIGN
 static inline void*
-aligned_alloc (std::size_t al, std::size_t sz)
+glibcxx_aligned_alloc (std::size_t al, std::size_t sz)
 {
   void *ptr;
   // The value of alignment shall be a power of two multiple of sizeof(void *).
@@ -47,19 +47,19 @@ aligned_alloc (std::size_t al, std::size_t sz)
     return ptr;
   return nullptr;
 }
-#elif _GLIBCXX_HAVE_MEMALIGN
-#if _GLIBCXX_HOSTED
-#include <malloc.h>
-#else
+#   elif _GLIBCXX_HAVE_MEMALIGN
+#       if _GLIBCXX_HOSTED
+#           include <malloc.h>
+#       else
 extern "C" void *memalign(std::size_t boundary, std::size_t size);
-#endif
-#define aligned_alloc memalign
-#else
-#include <stdint.h>
+#       endif
+#       define glibcxx_aligned_alloc memalign
+#   else
+#       include <stdint.h>
 // The C library doesn't provide any aligned allocation functions, define one.
 // This is a modified version of code from gcc/config/i386/gmm_malloc.h
 static inline void*
-aligned_alloc (std::size_t al, std::size_t sz)
+glibcxx_aligned_alloc (std::size_t al, std::size_t sz)
 {
   // Alignment must be a power of two.
   if (al & (al - 1))
@@ -81,7 +81,9 @@ aligned_alloc (std::size_t al, std::size_t sz)
 
   return aligned_ptr;
 }
-#endif
+#   endif
+#else
+#   define glibcxx_aligned_alloc aligned_alloc
 #endif
 
 _GLIBCXX_WEAK_DEFINITION void *
@@ -100,7 +102,7 @@ operator new (std::size_t sz, std::align_val_t al)
     sz += align - rem;
 #endif
 
-  while (__builtin_expect ((p = aligned_alloc (align, sz)) == 0, false))
+  while (__builtin_expect ((p = glibcxx_aligned_alloc (align, sz)) == 0, false))
     {
       new_handler handler = std::get_new_handler ();
       if (! handler)
