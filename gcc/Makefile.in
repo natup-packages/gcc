@@ -145,7 +145,7 @@ LANGUAGES = c gcov$(exeext) gcov-dump$(exeext) gcov-tool$(exeext) \
 # T_CFLAGS is used for all compilations and is overridden by t-* files.
 T_CFLAGS =
 TCFLAGS =
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ -lpthread
 CXXFLAGS = @CXXFLAGS@
 LDFLAGS = @LDFLAGS@
 

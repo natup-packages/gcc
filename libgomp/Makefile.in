@@ -416,7 +416,7 @@ nodist_toolexeclib_HEADERS = libgomp.spec
 
 # -Wc is only a libtool option.
 @LIBGOMP_BUILD_VERSIONED_SHLIB_TRUE@comma = ,
-@LIBGOMP_BUILD_VERSIONED_SHLIB_TRUE@PREPROCESS = $(subst -Wc$(comma), , $(COMPILE)) -E
+@LIBGOMP_BUILD_VERSIONED_SHLIB_TRUE@PREPROCESS = cpp # $(subst -Wc$(comma), , $(COMPILE)) -E
 @LIBGOMP_BUILD_VERSIONED_SHLIB_FALSE@libgomp_version_script = 
 @LIBGOMP_BUILD_VERSIONED_SHLIB_GNU_TRUE@@LIBGOMP_BUILD_VERSIONED_SHLIB_TRUE@libgomp_version_script = -Wl,--version-script,libgomp.ver
 @LIBGOMP_BUILD_VERSIONED_SHLIB_SUN_TRUE@@LIBGOMP_BUILD_VERSIONED_SHLIB_TRUE@libgomp_version_script = -Wl,-M,libgomp.ver-sun

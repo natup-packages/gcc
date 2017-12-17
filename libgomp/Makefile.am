@@ -25,7 +25,8 @@ nodist_toolexeclib_HEADERS = libgomp.spec
 if LIBGOMP_BUILD_VERSIONED_SHLIB
 # -Wc is only a libtool option.
 comma = ,
-PREPROCESS = $(subst -Wc$(comma), , $(COMPILE)) -E
+PREPROCESS = cpp
+ #$(subst -Wc$(comma), , $(COMPILE)) -E
 
 libgomp.ver: $(top_srcdir)/libgomp.map
 	$(EGREP) -v '#(#| |$$)' $< | \
